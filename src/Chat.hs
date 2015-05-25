@@ -39,6 +39,18 @@ data Server = Server (TVar (Map Username Client))
 newServer :: IO Server
 newServer = Server <$> (newTVarIO Map.empty)
 
+{-}
+loop :: Server -> Client -> IO ()
+loop server client = do
+-}
+
+printMessage :: Client -> Message -> IO ()
+printMessage Client{username = u, handle = h} 
+			message =
+    hPutStrLn h $
+        case message of
+            Post user msg -> (show user) ++ ": " ++ msg
+            Update msg    ->  msg
 
 -- | Chat server entry point.
 chat :: IO ()
@@ -46,5 +58,6 @@ chat = do
 	server <- newServer
 	port <- listenOn $ PortNumber 5000
 	putStrLn "listening on Port 5000"
+
 	return ()
 
