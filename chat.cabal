@@ -25,7 +25,7 @@ library
 
 executable chat
   hs-source-dirs: src
-  main-is: src/Server.hs
+  main-is: Server.hs
   build-depends:
     base < 5
    ,chat
