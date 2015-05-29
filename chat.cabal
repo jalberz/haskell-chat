@@ -16,6 +16,8 @@ library
     Chat, Client
   build-depends:
     base < 5
+    ,async > 2
+    ,stm > 2
 --   ,containers
    ,network >= 2.5.0.0
   default-language: Haskell2010
