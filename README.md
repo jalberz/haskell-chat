@@ -1,4 +1,4 @@
-### Usage
+# Usage
 
   The Chat server can be built by going to the `src` directory, and
 typing the following commands:
