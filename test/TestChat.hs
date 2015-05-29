@@ -47,7 +47,7 @@ runMessage = monadicIO $ do
 	line <- run (hGetLine hdl')
 	assert (line == "1: test string")
 	
-runIncrement :: IO (
+runIncrement :: IO ()
 runIncrement = monadicIO $ do
 	hdl <- run (newClient)
 	hdl' <- run (newClient)
