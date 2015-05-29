@@ -1,5 +1,24 @@
-<<<<<<< HEAD
-% Stanford CS240h Lab 2
+### Usage
+
+  The Chat server can be built by going to the `src` directory, and
+typing the following commands:
+
+```
+ $ ghc -Wall -threaded -O2 Server.hs
+ $ ./Server
+ 
+```
+The usage of the chat server as a client can be accomplished by running
+the above code in one terminal as the server, and opening another and typing
+in the following command:
+
+```
+telnet localhost <insert port number here>
+```
+
+The default port number that will be listened on is 5000.
+
+## Original Specs from Stanford:
 
 You will write a basic chat server. It will support any number of
 clients and allow them to join and leave at any time. Please implement
@@ -146,45 +165,3 @@ typing:
         cabal test
 
 And you'll get some pretty output!
-
-## Testing Lab 2
-
-Some skeleton code for a test framework is provided in
-`TestHarness.hs`. You'll need to edit it to add your own tests. The
-test framework uses a Haskell package called
-[hspec](http://hspec.github.io/). Please refer to it for documentation
-on how to use it.
-
-We also strongly encourage the use of [quick
-check](http://hackage.haskell.org/package/QuickCheck)! It can be
-integrated with the test driver that HSpec provides, please see the
-skeleton code that has an example of how.
-
-## Grading
-
-While we strongly encourage you to take testing seriously and write a
-comprehensive test suite, we are only going to grade you on your glob
-matching implementation.
-
-Grading will be just done on functionality but we will try to give
-feedback on your coding style.
-
-## Submitting
-
-First, simply type:
-
-        cabal sdist
-
-This will generate a tar file of your code in `dist/globber.tar.gz`.
-
-Then go to [upload.ghc.io](http://upload.ghc.io/) and submit your work
-through the online form. You can resubmit as many times as you want up
-until the deadline.
-
-If you have any trouble submitting on-line, then please email the
-staff mailing [list](mailto:cs240h-staff@scs.stanford.edu).
-
-=======
-# haskell-chat
-A chat server written in haskell
->>>>>>> e193e63de30133d0da0e8a44e753273ea46c7ac1
