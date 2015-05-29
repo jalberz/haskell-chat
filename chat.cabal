@@ -1,6 +1,6 @@
 name:           chat
 version:        1.0.0
-synopsis:       Stanford CS240h Lab 2 - Chat Server
+synopsis:       UChicago 22311 Lab 2 - Chat Server
 build-type:     Simple
 cabal-version:  >= 1.10
 category:       System
@@ -24,7 +24,8 @@ library
   ghc-options: -Wall
 
 executable chat
-  main-is: Server.hs
+  hs-source-dirs: src
+  main-is: src/Server.hs
   build-depends:
     base < 5
    ,chat
