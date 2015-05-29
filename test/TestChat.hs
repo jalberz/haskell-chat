@@ -22,7 +22,7 @@ import Network
 import Chat
 
 
-newClient :: IO handle
+newClient :: IO Handle
 newClient = do
 	port <- getEnv "CHAT_SERVER_PORT"
 	conn <- connectTo "localhost" 
@@ -77,7 +77,7 @@ testbatch = do
 
 main :: IO ()
 main = do
-	setEnv "CHAT_SERVER_PORT" 3000
+	setEnv "CHAT_SERVER_PORT" "3000"
 	bracket_ (chat) (printf "tests complete\n") (testbatch)
 	return ()
 
