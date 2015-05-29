@@ -87,7 +87,8 @@ chat = withSocketsDo $ do
 findPort :: IO PortNumber
 findPort = do
 	chatport <- lookupEnv "CHAT_SERVER_PORT"
-	let port = case chatport of
+	let port = 
+		case chatport of
 	  	Nothing  -> 5000
 	  	Just str -> fromIntegral (read str :: Int)
 	return port

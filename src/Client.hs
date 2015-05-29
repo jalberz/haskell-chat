@@ -6,7 +6,9 @@ Instructors: Stuart Kurtz & Jakub Tucholski
 -}
 
 --An additional module for defining functions
---directly related to the Client
+--directly related to the Client.
+--All functions are needed by Chat.hs, so
+--all are included within module.
 module Client  where
 
 import Control.Applicative
