@@ -5,14 +5,7 @@ Instructors: Stuart Kurtz & Jakub Tucholski
 2015-05-28
 -}
 
-module Client ( Message
-							, Username
-							, Client
-							, mkClient
-							, issueMessage
-							, issuer
-							, receiver
-							) where
+module Client  where
 
 import Control.Applicative
 import Control.Monad
