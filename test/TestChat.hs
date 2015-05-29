@@ -15,7 +15,7 @@ import Control.Exception
 import System.Environment (setEnv, getEnv)
 import System.IO
 import Control.Concurrent (forkFinally)
-import Text.printf (printf)
+import Text.Printf (printf)
 import Control.Concurrent.STM
 import Network
 
