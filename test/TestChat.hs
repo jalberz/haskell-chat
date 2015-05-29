@@ -29,57 +29,48 @@ newClient = do
 		(PortNumber $ fromIntegral (read port :: Int))
 	return conn
 
-{-}
+
 main :: IO ()
 main = hspec $ describe "Testing Lab 2" $ do
-
-  -- example quickcheck test in hspec.
-  describe "read" $ do
-    it "is inverse to show" $ property $
-      \x -> (read . show) x == (x :: Int)
-  --describe "messages sent test" $ do
-  --	it "writes to the TChan" $ prop_Message
-
-prop_Message :: Handle-> Property
-prop_Message handle= monadicIO $ do
-	run (chat)
-	hPutStr h "test string"
-	run (issuer client)
-	msg <- atomically $ readTChan c
-	assert (msg == "test string")
-
-prop_incr :: State -> TChan (Message) -> Socket -> Property
-prop_incr server c s = monadicIO $ do
-	run(chat)
--}
-
-runMessage :: IO Bool
-runMessage = do
-	handle <- newClient
-	handle' <- newClient
-	hPutStr handle "test string"
-	line <- hGetLine handle'
-	return (line == "test string")
-	
---runIncrement :: IO ()
---runIncrement = do
---	handle <- newClient
---	h
-
-testbatch :: IO ()
-testbatch = do
-	forkFinally (runMessage) (\_ -> printf "Run Message Test done\n")
-	--forkFinally (runIncrement) (\_ -> check --printproblem)
-	--forkFinally (runEnterExit) (\_ -> check --printproblem)
-	--forkFinally (runBroadcast) (\_ -> check --printproblem)
-	--forkFinally (runReceipt) (\_ -> check --printproblem)
-	return ()
-
-main :: IO ()
-main = do
 	setEnv "CHAT_SERVER_PORT" "3000"
 	bracket_ (chat) (printf "tests complete\n") (testbatch)
+  -- example quickcheck test in hspec.
+  --describe "read" $ do
+  --  it "is inverse to show" $ property $
+  --    \x -> (read . show) x == (x :: Int)
+
+runMessage :: Property
+runMessage = monadicIO $ do
+	hdl <- run (newClient)
+	hdl' <- run (newClient)
+	run (hPutStr hdl "test string")
+	line <- run (hGetLine hdl')
+	assert (line == "1: test string")
+	
+runIncrement :: IO (
+runIncrement = monadicIO $ do
+	hdl <- run (newClient)
+	hdl' <- run (newClient)
+	hdl'' <- run (newClient)
+	run (hPutStr hdl "first")
+	line <- run (hGetLine hdl')
+	run (hPutStr hdl' "second")
+	line' <- run (hGetLine hdl'')
+	run (hPutStr hdl'' "third")
+	line'' <- run (hGetLine hdl)
+	assert (line == "1: first"
+				&& line' == "2: second"
+				&& line'' == "3: third")
+
+testbatch :: IO ()
+testbatch = hspec $ do
+	describe "messages sent test" $ do
+  	it "writes to the TChan" $ runMessage `shouldBe` True
+  describe "id increment test" $ do
+  	it "increments id with each new client" 
+  	$ runIncrement `shouldBe` True
 	return ()
+
 
 
 
