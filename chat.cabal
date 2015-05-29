@@ -29,6 +29,9 @@ executable chat
   build-depends:
     base < 5
    ,chat
+   ,async > 2
+   ,stm > 2
+   ,network >= 2.5.0.0
 
 test-suite test-chat
   hs-source-dirs: test
