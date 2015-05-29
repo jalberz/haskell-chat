@@ -12,7 +12,10 @@ import Test.Hspec
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
 import Control.Exception
+import System.Environment (setEnv, getEnv)
 import System.IO
+import Control.Concurrent (forkFinally)
+import Text.printf (printf)
 import Control.Concurrent.STM
 import Network
 
@@ -23,6 +26,7 @@ newClient :: IO handle
 newClient = do
 	conn <- connectTo "localhost" 
 		(fromIntegral (read (getEnv "CHAT_SERVER_PORT") :: Int))
+	return conn
 
 {-}
 main :: IO ()
@@ -73,7 +77,7 @@ testbatch = do
 main :: IO ()
 main = do
 	setEnv "CHAT_SERVER_PORT" 3000
-	branch_ (chat) (printf "tests complete\n") (testbatch)
+	bracket_ (chat) (printf "tests complete\n") (testbatch)
 	return ()
 
 
