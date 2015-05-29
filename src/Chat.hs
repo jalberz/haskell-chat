@@ -7,15 +7,16 @@ Instructors: Stuart Kurtz & Jakub Tucholski
 
 module Chat (chat) where
 
-import Control.Applicative
-import Control.Concurrent
-import Control.Concurrent.Async
+import Control.Applicative 
+import Control.Concurrent (forkFinally)
+import Control.Concurrent.Async (race)
 import Control.Concurrent.STM
 import Control.Exception hiding (handle)
 import Network
-import System.Environment
-import System.IO
-import Text.Printf
+import System.Environment (lookupEnv)
+import System.IO (hSetBuffering, BufferMode (LineBuffering)
+								 , hClose)
+import Text.Printf (printf)
 
 import Client
 

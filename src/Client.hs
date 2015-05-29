@@ -8,9 +8,9 @@ Instructors: Stuart Kurtz & Jakub Tucholski
 module Client  where
 
 import Control.Applicative
-import Control.Monad
+import Control.Monad (forever)
 import Control.Concurrent.STM
-import System.IO
+import System.IO (hPutStrLn, hGetLine, Handle)
 
 --A message can either be:
 --a) a post by a user containing their
