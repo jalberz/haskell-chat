@@ -8,7 +8,6 @@ Instructors: Stuart Kurtz & Jakub Tucholski
 module Chat (chat) where
 
 import Control.Applicative
-import Control.Monad
 import Control.Concurrent
 import Control.Concurrent.Async
 import Control.Concurrent.STM
@@ -66,6 +65,7 @@ findPort = do
 -- | Chat server entry point.
 chat :: IO ()
 chat = withSocketsDo $ do
+	printf "Default port set to 5000"
 	port <- findPort
 	server <- newServer
 	printf "listening on Port: %d\n" (toInteger port)

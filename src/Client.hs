@@ -9,7 +9,6 @@ module Client  where
 
 import Control.Applicative
 import Control.Monad
-import Control.Concurrent
 import Control.Concurrent.Async
 import Control.Concurrent.STM
 import Network
@@ -47,9 +46,9 @@ mkClient u h c =
 
 issueMessage :: Client -> Message -> IO ()
 issueMessage Client {username = u
-					, handle = h
-					, channel = c
-					}
+										, handle = h
+										, channel = c
+										}
 	message = do
     hPutStrLn h $
         case message of
