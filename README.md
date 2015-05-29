@@ -18,6 +18,11 @@ telnet localhost <insert port number here>
 
 The default port number that will be listened on is 5000.
 
+I was unable to finish the test-suite in time (had issues with the IO subpackage
+for Test.QuickCheck (Test.QuickCheck.Monadic), however my progress can be found in
+TestChat.hs in the test folder. Manual Testing also seemed to following the req's
+as outlined in the rubric.
+
 ## Original Specs from Stanford:
 
 You will write a basic chat server. It will support any number of
