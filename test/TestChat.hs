@@ -1,3 +1,10 @@
+{-
+Jacob Albers
+CMSC 22311 - Functional Systems in Haskell
+Instructors: Stuart Kurtz & Jakub Tucholski
+2015-05-28
+-}
+
 -- | Test our chat server.
 module Main (main) where
 

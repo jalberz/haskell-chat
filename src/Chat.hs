@@ -7,6 +7,7 @@ Instructors: Stuart Kurtz & Jakub Tucholski
 
 module Chat (chat) where
 
+--external libraries
 import Control.Applicative 
 import Control.Concurrent (forkFinally)
 import Control.Concurrent.Async (race)
@@ -18,15 +19,19 @@ import System.IO (hSetBuffering, BufferMode (LineBuffering)
 								 , hClose)
 import Text.Printf (printf)
 
+--homebrewed module
 import Client
 
---a server is composed of:
---A TVar that can be 
+--A server state is composed of:
+--A TVar that represents the current username number
 data State = State { usernames :: TVar (Int) }
 
 newServer :: IO State
 newServer = State <$> (newTVarIO 0)
 
+--talk broadcasts that a client has joined the chat
+--and allows a client issue her own messages through 
+--and receive messages from others via the race function.
 talk :: Client -> IO ()
 talk client@Client { username = u
 									 , handle = h 
@@ -37,6 +42,7 @@ talk client@Client { username = u
 	_ <- race (issuer client) (receiver client)
 	return ()
 
+--broadcasts the departure of a client and closes their handle.
 stopTalk :: Client -> IO ()
 stopTalk Client { username = u
 								, handle = h 
@@ -45,6 +51,12 @@ stopTalk Client { username = u
 	atomically $ writeTChan c (Update $ (show u) ++ " has left")
 	hClose h
 
+
+--buildThreads does most of the heaving lifting in terms of
+--architecting the state of the server. It derives the current
+--information from the server state, a socket, and the latest 
+--channel to build a Client. this client is then sent to join
+--the chat via talk -> an exception triggers stopTalk.
 buildThreads :: State -> TChan (Message) -> Socket -> IO ()
 buildThreads server@State {usernames = us} c s = do
 	(hdl, host, port) <- accept s
@@ -56,15 +68,12 @@ buildThreads server@State {usernames = us} c s = do
 	_ <- forkFinally (talk client) (\_ -> stopTalk client)
 	buildThreads server newchan s
 
-findPort :: IO PortNumber
-findPort = do
-	chatport <- lookupEnv "CHAT_SERVER_PORT"
-	let port = case chatport of
-	  	Nothing  -> 5000
-	  	Just str -> fromIntegral (read str :: Int)
-	return port
 
 -- | Chat server entry point.
+-- chat searches for the current value of CHAT_SERVER_PORT,
+-- if that value has not been set, it uses a default of 5000.
+-- It brackets the opening of a socket, building threads and
+--running the chat, and the ulimate closing of that socket.
 chat :: IO ()
 chat = withSocketsDo $ do
 	_ <- printf "Default port set to 5000\n"
@@ -75,3 +84,10 @@ chat = withSocketsDo $ do
 	bracket (listenOn (PortNumber port)) (sClose) (buildThreads server chan)
 	return ()
 
+findPort :: IO PortNumber
+findPort = do
+	chatport <- lookupEnv "CHAT_SERVER_PORT"
+	let port = case chatport of
+	  	Nothing  -> 5000
+	  	Just str -> fromIntegral (read str :: Int)
+	return port
