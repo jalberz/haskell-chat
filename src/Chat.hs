@@ -56,15 +56,12 @@ buildThreads server@State {usernames = us} c s = do
 	forkFinally (talk client) (\_ -> stopTalk client)
 	buildThreads server newchan s
 
-
-findPort :: IO PortNumber
 findPort = do
-	string <- lookupEnv "CHAT_SERVER_PORT"
-
-	let port = case string of
+	chatport <- lookupEnv "CHAT_SERVER_PORT"
+	let port = case chatport of
 	  	Nothing  -> 5000
 	  	Just str -> fromIntegral (read str :: Int)
-	return (port)
+	return port
 
 -- | Chat server entry point.
 chat :: IO ()
