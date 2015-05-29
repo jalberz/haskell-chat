@@ -9,9 +9,7 @@ module Client  where
 
 import Control.Applicative
 import Control.Monad
-import Control.Concurrent.Async
 import Control.Concurrent.STM
-import Network
 import System.IO
 
 --A message can either be:
@@ -47,7 +45,6 @@ mkClient u h c =
 issueMessage :: Client -> Message -> IO ()
 issueMessage Client {username = u
 										, handle = h
-										, channel = c
 										}
 	message = do
     hPutStrLn h $
@@ -58,18 +55,16 @@ issueMessage Client {username = u
             Update msg    ->  msg
 
 issuer :: Client -> IO ()
-issuer client@Client { username = u
-										 , handle = h 
-										 , channel = c
-										 } = forever $ do
+issuer Client { username = u
+							, handle = h 
+							, channel = c
+							} = forever $ do
     line <- hGetLine h
     let msg = Post u line
     atomically $ writeTChan c msg
 
 receiver :: Client -> IO ()
-receiver client@Client { username = u
-										 	 , handle = h 
-										 	 , channel = c
+receiver client@Client { channel = c
 										 	 } = forever $ do
   msg <- atomically $ readTChan c
   issueMessage client msg

@@ -37,24 +37,25 @@ talk client@Client { username = u
 	return ()
 
 stopTalk :: Client -> IO ()
-stopTalk client@Client { username = u
-											 , handle = h 
-											 , channel = c
-											 } = do
+stopTalk Client { username = u
+								, handle = h 
+								, channel = c
+								} = do
 	atomically $ writeTChan c (Update $ (show u) ++ " has left")
 	hClose h
 
 buildThreads :: State -> TChan (Message) -> Socket -> IO ()
 buildThreads server@State {usernames = us} c s = do
-	(handle, host, port) <- accept s
-	printf "Accepted connection from %s: %s\n" host (show port)
+	(hdl, host, port) <- accept s
+	_ <- printf "Accepted connection from %s: %s\n" host (show port)
 	newchan <- atomically $ dupTChan c
 	atomically $ modifyTVar us (+ 1)
 	newname <- atomically $ readTVar us
-	client <- mkClient newname handle newchan
-	forkFinally (talk client) (\_ -> stopTalk client)
+	client <- mkClient newname hdl newchan
+	_ <- forkFinally (talk client) (\_ -> stopTalk client)
 	buildThreads server newchan s
 
+findPort :: IO PortNumber
 findPort = do
 	chatport <- lookupEnv "CHAT_SERVER_PORT"
 	let port = case chatport of
@@ -65,10 +66,10 @@ findPort = do
 -- | Chat server entry point.
 chat :: IO ()
 chat = withSocketsDo $ do
-	printf "Default port set to 5000"
+	_ <- printf "Default port set to 5000\n"
 	port <- findPort
 	server <- newServer
-	printf "listening on Port: %d\n" (toInteger port)
+	_ <- printf "listening on Port: %d\n" (toInteger port)
 	chan <- newTChanIO
 	bracket (listenOn (PortNumber port)) (sClose) (buildThreads server chan)
 	return ()
