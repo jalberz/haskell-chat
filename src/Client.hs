@@ -1,4 +1,18 @@
-module Client where
+{-
+Jacob Albers
+CMSC 22311 - Functional Systems in Haskell
+Instructors: Stuart Kurtz & Jakub Tucholski
+2015-05-28
+-}
+
+module Client ( Message
+							, Username
+							, Client
+							, mkClient
+							, issueMessage
+							, issuer
+							, receiver
+							) where
 
 import Control.Applicative
 import Control.Monad
@@ -8,8 +22,6 @@ import Control.Concurrent.STM
 import Network
 import System.IO
 
-import Data.Map as Map
-
 --A message can either be:
 --a) a post by a user containing their
 --message and their username
@@ -18,6 +30,7 @@ import Data.Map as Map
 --is added or drops the chat.
 data Message = Post Username String
 				| Update String
+				deriving (Show, Eq, Ord)
 
 --A username is a unique int 
 type Username = Int
@@ -26,27 +39,45 @@ type Username = Int
 --1 >> A username, which is a number
 --2 >> A handle to be referred to when
 --placing output
+--3 >> A channel for broadcasting to
 data Client = 
 	Client
 	{ username :: Username
 	, handle :: Handle
-	, outgoing :: TChan Message
+	, channel :: TChan (Message)
 	}
  
-mkClient :: Username -> Handle -> IO Client
-mkClient u h = 
- 	Client <$> return u <*> return h <*> newTChanIO
+--build Client from component pieces 
+mkClient :: Username -> Handle -> TChan (Message) -> IO Client
+mkClient u h c = 
+ 	Client <$> return u <*> return h <*> (atomically (dupTChan c))
 
-issueMsg :: Message -> Client -> STM ()
-issueMsg msg Client{username = u
+issueMessage :: Client -> Message -> IO ()
+issueMessage Client {username = u
 					, handle = h
-					, outgoing = o} =
-	writeTChan o msg
-
-printMessage :: Client -> Message -> IO ()
-printMessage Client{username = u, handle = h} 
-			message =
+					, channel = c
+					}
+	message = do
     hPutStrLn h $
         case message of
-            Post user msg -> (show user) ++ ": " ++ msg
+            Post user msg -> if (user /= u)
+            	then (show user) ++ ": " ++ msg
+            	else ""
             Update msg    ->  msg
+
+issuer :: Client -> IO ()
+issuer client@Client { username = u
+										 , handle = h 
+										 , channel = c
+										 } = forever $ do
+    line <- hGetLine h
+    let msg = Post u line
+    atomically $ writeTChan c msg
+
+receiver :: Client -> IO ()
+receiver client@Client { username = u
+										 	 , handle = h 
+										 	 , channel = c
+										 	 } = forever $ do
+  msg <- atomically $ readTChan c
+  issueMessage client msg
