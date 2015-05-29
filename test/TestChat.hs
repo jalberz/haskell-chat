@@ -22,7 +22,7 @@ import Chat
 newClient :: IO handle
 newClient = do
 	conn <- connectTo "localhost" 
-		(fromIntegral (read (getEnv "CHAT_SERVER_PORT") :: Int)
+		(fromIntegral (read (getEnv "CHAT_SERVER_PORT") :: Int))
 
 {-}
 main :: IO ()
