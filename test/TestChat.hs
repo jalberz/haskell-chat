@@ -24,8 +24,9 @@ import Chat
 
 newClient :: IO handle
 newClient = do
+	port <- getEnv "CHAT_SERVER_PORT"
 	conn <- connectTo "localhost" 
-		(fromIntegral (read (getEnv "CHAT_SERVER_PORT") :: Int))
+		(fromIntegral (read (port :: Int)))
 	return conn
 
 {-}
